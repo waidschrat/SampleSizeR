@@ -104,6 +104,13 @@ mod_RCT_binary_server <- function(id){
       (1-pnorm(qnorm(1-input$Alpha,0,lOR_se), lOR, lOR_se))*100
     })
     
+    # input <- list()
+    # input$Risk_T <- 0.2
+    # input$Risk_C <- 0.1
+    # input$Sample <- c(32,512)
+    # input$Prop_T <- 0.5
+    # input$Alpha <- 0.05
+    # input$Delta <- 1
     
     # Plots
     output$DistPlot <- renderPlot({
@@ -114,13 +121,14 @@ mod_RCT_binary_server <- function(id){
                             N1 = input$Sample[2]*input$Prop_T, N2 = input$Sample[2]*(1-input$Prop_T)
       ) #calculate standard error of log OR
       
-      x <- seq( log(input$Delta/2), log(input$Delta*2), length=250 )
-      plot(dnorm(x, 0, lOR_se), type = "l", lty = 2,
+      x <- seq( log(input$Delta/3), log(input$Delta*3)+lOR, length=250 )
+      plot(x, dnorm(x, 0, lOR_se), type = "l", lty = 2,
            ylab = "probability density", xlab = "estimated log odds ratio")
-      lines(dnorm(x, lOR, lOR_se))
-      abline(v=log(input$Delta), lty = 2, col = "red")
+      lines(x, dnorm(x, lOR, lOR_se))
+      abline(v=log(input$Delta), lty = 3, col = "red")
       
       grid()
+      legend("topleft", lty = 1:2, legend = c("OR = Relevance Margin","OR = True Effect"), bty = "n")
     })
     
     output$PowPlot <- renderPlot({
