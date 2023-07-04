@@ -6,7 +6,9 @@
 #'
 #' @noRd 
 #'
-#' @importFrom shiny NS tagList 
+#' @import shinyjs
+#' @importFrom shiny NS tagList
+#' @importFrom shinyWidgets sliderTextInput
 mod_RCT_binary_ui <- function(id){
   
   ns <- NS(id)
@@ -128,7 +130,7 @@ mod_RCT_binary_server <- function(id){
       abline(v=log(input$Delta), lty = 3, col = "red")
       
       grid()
-      legend("topleft", lty = 1:2, legend = c("OR = Relevance Margin","OR = True Effect"), bty = "n")
+      legend("topleft", lty = 1:2, legend = c("OR = True Effect", "OR = Relevance Margin"), bty = "n")
     })
     
     output$PowPlot <- renderPlot({

@@ -1,25 +1,21 @@
 Package: SampleSizeR
 Title: Sample Size Calculation and Power Analysis for Clinical Studies
-Version: 0.0.0.9000
+Version: 0.1
 Authors@R: 
     person("Robert", "Miller", , "robert.miller@tu-dresden.de", role = c("cre", "aut"))
-Description: Shiny application to facilitate sample size and power determination 
-    for clinical studies using various designs.
+Description: The description of this package needs to be ammended.
 License: GPL (>= 3)
 URL: https://github.com/waidschrat/SampleSizeR
 BugReports: https://github.com/waidschrat/SampleSizeR/issues
 Imports: 
-    colourpicker,
     config (>= 0.3.1),
     ggplot2,
     golem (>= 0.3.3),
-    grDevices,
-    scales,
     shiny (>= 1.7.2),
     shinyBS,
+    shinydashboard,
     shinyjs,
-    shinyWidgets,
-    stats
+    shinyWidgets
 Suggests: 
     knitr,
     rmarkdown,

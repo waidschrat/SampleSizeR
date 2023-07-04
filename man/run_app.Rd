@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_app.R
 \name{run_app}
 \alias{run_app}
-\title{Shiny Application to Visualize Bayesian Regions of Evidence}
+\title{Shiny Application}
 \usage{
 run_app(
   onStart = NULL,
@@ -35,10 +35,7 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{init}{Named list containing the arguments that are passed to the bayesROE 
-function: ee, se, delta, alpha.}
-
-\item{cols}{Named list of RGB hexadecimal color keys.}
+\item{init}{Named list containing the arguments that are passed to function}
 
 \item{...}{arguments to pass to golem_opts.
 See `?golem::get_golem_options` for more details.}
@@ -47,16 +44,12 @@ See `?golem::get_golem_options` for more details.}
 Start Shiny server and access application using browser
 }
 \description{
-Initialize and execute a local Shiny session to 
-    interactively visualize and explore the Bayesian Regions of Evidence.
-    Parameters entries from the sidebar are passed to the bayesROE function.
+Initialize and execute a local Shiny session.
 }
 \examples{
-# reproducing Figure 3 from Hoefler and Miller (2023)
 init <- list(ee = 9, se = 3.9, delta = c(0, 3.75), alpha = 0.025)
-cols <- list(col_lower = "#F5FF82", col_upper = "#27CC1E")
 if(interactive()){
-   run_app(init = init, cols = cols)
+   run_app(init = init)
 }
 
 }
