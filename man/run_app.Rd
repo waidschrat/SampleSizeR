@@ -10,7 +10,6 @@ run_app(
   enableBookmarking = NULL,
   uiPattern = "/",
   init = NULL,
-  cols = NULL,
   ...
 )
 }
@@ -47,7 +46,7 @@ Start Shiny server and access application using browser
 Initialize and execute a local Shiny session.
 }
 \examples{
-init <- list(ee = 9, se = 3.9, delta = c(0, 3.75), alpha = 0.025)
+inits <- list("Risk_T"=0.5, "Risk_C"=0.3)
 if(interactive()){
    run_app(init = init)
 }

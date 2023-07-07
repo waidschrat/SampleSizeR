@@ -39,30 +39,27 @@ remotes::install_github(repo = "waidschrat/SampleSizeR")
 
 ## Run Application Online
 
-The application is available from (https://htaor.shinyapps.io/samplesizer/)
+The application is available from https://htaor.shinyapps.io/samplesizer
 
 ## Run Application Locally
 
-The following examples illustrates how to run the application locally.
+The following example illustrates how to run the application locally.
 
 ```{r example}
-# library(SampleSizeR)
-# 
-# # Arguments
-# init <- list(ee = 3.07, se = 1.19, delta = c(-3, 0, 3), alpha = 0.025)
-# cols <- list(col_lower = "#F5FF82", col_upper = "#27CC1E")
-# 
-# # Pass Arguments to Locally Run Shiny Application using run_app()
-# if(interactive()){
-#   run_app(init = init, cols = cols)
-# }
-# 
-# # Alternatively Generate and Customize Regions of Evidence Plot using ribbonROE()
-# HM23.3 <- ribbonROE(ee = init$ee, se = init$se, delta = init$delta, alpha = init$alpha, 
-#                     cols = c(cols$col_lower, cols$col_upper))$plot + 
-#   ggplot2::annotate(geom = "point", y = init$ee, x = init$se, shape = 4) +
-#   ggplot2::coord_flip(ylim = c(-5, 15))
+library(SampleSizeR)
 
+# Arguments for Power Analysis of Binary Outcome
+init <- list("Risk_T"=0.2, #Event Risk in Treatment Arm
+              "Risk_C"=0.1, #Event Risk in Comparator Arm
+              "Sample"=c(32,512), # Total Sample Size
+              "Prop_T"=0.7, # Proportion of Sample Allocated to Treatment Arm
+              "Alpha"=0.025, # Type 1 Error Probability
+              "Delta"=1) # Relevance Margin of Effect (Odds Ratio)
+
+# Pass Arguments to Locally Run Shiny Application using run_app()
+if(interactive()){
+  run_app(init = init)
+}
 
 ```
 

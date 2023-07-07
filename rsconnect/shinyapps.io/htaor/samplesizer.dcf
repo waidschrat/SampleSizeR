@@ -5,7 +5,7 @@ account: htaor
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9405239
-bundleId: 7419032
+bundleId: 7430241
 url: https://htaor.shinyapps.io/samplesizer/
-when: 1688486641.85171
-lastSyncTime: 1688486641.85171
+when: 1688718638.50727
+lastSyncTime: 1688718638.50727

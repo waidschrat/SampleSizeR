@@ -10,7 +10,7 @@
 #' @return Start Shiny server and access application using browser
 #' 
 #' @examples
-#' init <- list(ee = 9, se = 3.9, delta = c(0, 3.75), alpha = 0.025)
+#' inits <- list("Risk_T"=0.5, "Risk_C"=0.3)
 #' if(interactive()){
 #'    run_app(init = init)
 #' }
@@ -26,11 +26,10 @@ run_app <- function(
   enableBookmarking = NULL,
   uiPattern = "/",
   init = NULL,
-  cols = NULL,
   ...) {
   
   #set default golem_opts and update based on user input
-  inits <- list(ee = 6, se = 3.9, delta = c(0,-1,1), alpha = c(0.025,0.05,0.01)) #Default Parameter Set
+  inits <- list("Risk_T"=0.2, "Risk_C"=0.1, "Sample"=c(32,512), "Prop_T"=0.5, "Alpha"=0.025, "Delta"=1) #Default Parameter Set
   if(!is.null(init)) inits[match.arg(names(init),names(inits), several.ok = TRUE)] <- init
   
   with_golem_options(

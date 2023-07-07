@@ -12,6 +12,7 @@
 mod_RCT_binary_ui <- function(id){
   
   ns <- NS(id)
+  inits <- get_golem_options("inits")
   
   tagList(
     fixedRow(useShinyjs(),
@@ -21,24 +22,24 @@ mod_RCT_binary_ui <- function(id){
                       br(),
                       numericInput(inputId = ns("Risk_T"),
                                    label = "Event Risk | Treatment Arm", 
-                                   value = 0.2, min = 0, max = 1, step = 0.05),
+                                   value = inits$Risk_T, min = 0, max = 1, step = 0.05),
                       numericInput(inputId = ns("Risk_C"),
                                    label = "Event Risk | Comparator Arm", 
-                                   value = 0.1, min = 0, max = 1, step = 0.05),
+                                   value = inits$Risk_C, min = 0, max = 1, step = 0.05),
                       sliderTextInput(inputId = ns("Sample"),
                                       label = "Total Sample Size",
                                       choices = seqb(c(16,2048), digits = 0),
-                                      selected=c(32,512)),
+                                      selected = inits$Sample),
                       sliderTextInput(inputId = ns("Prop_T"),
                                       label = "Sample Proportion | Treatment Arm",
                                       choices = seq(0.1,0.9,by=0.1),
-                                      selected=0.5),
+                                      selected = inits$Prop_T),
                       numericInput(inputId = ns("Alpha"),
                                    label = "Type 1 Error Probability", 
-                                   value = 0.05, min = 0, max = 1, step = 0.01),
+                                   value = inits$Alpha, min = 0, max = 1, step = 0.01),
                       numericInput(inputId = ns("Delta"),
                                    label = "Relevance Margin (Odds Ratio)", 
-                                   value = 1, min = 0, max = 25, step = 0.01),
+                                   value = inits$Delta, min = 0, max = 25, step = 0.01),
                       br(),
                       em("Implied Effect Size"),
                       tableOutput(outputId = ns("EffectTab"))
@@ -84,11 +85,16 @@ mod_RCT_binary_ui <- function(id){
 #' RCT_binary Server Functions
 #'
 #' @noRd 
+#' @import stats
+#' @import graphics
+#' @importFrom grDevices rgb
 mod_RCT_binary_server <- function(id){
   
   moduleServer( id, function(input, output, session){
     
     ns <- session$ns
+    inits <- get_golem_options("inits")
+    #input <- inits
     
     # Reactives
     PowNum <- reactive({
@@ -106,14 +112,6 @@ mod_RCT_binary_server <- function(id){
       (1-pnorm(qnorm(1-input$Alpha,0,lOR_se), lOR, lOR_se))*100
     })
     
-    # input <- list()
-    # input$Risk_T <- 0.2
-    # input$Risk_C <- 0.1
-    # input$Sample <- c(32,512)
-    # input$Prop_T <- 0.5
-    # input$Alpha <- 0.05
-    # input$Delta <- 1
-    
     # Plots
     output$DistPlot <- renderPlot({
       lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C,
@@ -124,11 +122,28 @@ mod_RCT_binary_server <- function(id){
       ) #calculate standard error of log OR
       
       x <- seq( log(input$Delta/3), log(input$Delta*3)+lOR, length=250 )
-      plot(x, dnorm(x, 0, lOR_se), type = "l", lty = 2,
-           ylab = "probability density", xlab = "estimated log odds ratio")
+      plot(x, dnorm(x, log(input$Delta), lOR_se), type = "l", lty = 2, axes = F,
+           ylab = "probability density", xlab = "estimated odds ratio (OR)",
+           main = paste("total sample size =", input$Sample[2]) )
       lines(x, dnorm(x, lOR, lOR_se))
-      abline(v=log(input$Delta), lty = 3, col = "red")
+      x <- seq( log(input$Delta/3), log(input$Delta*3)+lOR, length=11 )
+      axis(1, at = x, labels = round(exp(x),1) )
+      axis(2)
       
+      abline(v=log(input$Delta), lty = 3, col = "red")
+      x <- seq( qnorm(1-input$Alpha, log(input$Delta), lOR_se), log(input$Delta*3)+lOR, length=100 )
+      polygon(c(x,rev(x)),
+              c(dnorm(x, log(input$Delta), lOR_se), rep(0, length(x))),
+              col=rgb(1,0,0,0.2), border = NA)
+      x <- seq( qnorm(1-input$Alpha, log(input$Delta), lOR_se), log(input$Delta*3)+lOR, length=100 )
+      polygon(c(x,rev(x)),
+              c(dnorm(x, lOR, lOR_se), rep(0, length(x))),
+              col=rgb(0,0,1,0.2), border = NA)
+      
+      pow <- 1-pnorm(qnorm(1-input$Alpha, log(input$Delta), lOR_se), lOR, lOR_se)
+      text(lOR, dnorm(lOR, lOR, lOR_se)*0.5, 
+           labels = paste(round(pow*100,1), "%") )
+
       grid()
       legend("topleft", lty = 1:2, legend = c("OR = True Effect", "OR = Relevance Margin"), bty = "n")
     })
