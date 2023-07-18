@@ -28,7 +28,7 @@ golem::add_module(name = "RCT_continuous", with_test = TRUE) # Name of the modul
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
-golem::add_fct("ribbonROE", with_test = TRUE)
+golem::add_fct("Chow2008", with_test = FALSE)
 
 golem::add_utils("binary_endpoints", with_test = TRUE)
 
