@@ -97,17 +97,14 @@ mod_RCT_binary_server <- function(id){
     #input <- inits
     
     # Reactives
-    PowNum <- reactive({
+    PowSeq <- reactive({
       N1 <- as.numeric(input$Sample)*input$Prop_T
       N1 <- seqb(N1, by = 0.01)
       N2 <- as.numeric(input$Sample)*(1-input$Prop_T)
       N2 <- seqb(N2, by = 0.01)
 
-      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C) #calculate log OR
-      lOR_se <- OddsRatioSE(R1 = input$Risk_T, R2 = input$Risk_C,
-                            N1 = round(N1), N2 = round(N2)
-                            ) #calculate standard error of log OR
-      (1-pnorm(qnorm(1-input$Alpha,0,lOR_se), lOR, lOR_se))*100
+      PowOddsRatio(R1 = input$Risk_T, R2 = input$Risk_C, N1, N2, 
+                   Alpha = input$Alpha, Delta = input$Delta)*100
     })
     
     # Plots
@@ -145,8 +142,7 @@ mod_RCT_binary_server <- function(id){
     })
     
     output$PowPlot <- renderPlot({
-      pow <- round(PowNum(), 1)
-      plot(seqb(input$Sample, by = 0.01), pow, type = "l",
+      plot(seqb(input$Sample, by = 0.01), round(PowSeq(), 1), type = "l",
            ylim = c(0, 100),
            ylab = "conditional probability of success (%)", xlab = "total sample size")
       grid()
@@ -167,8 +163,9 @@ mod_RCT_binary_server <- function(id){
     output$EffectTab <- renderTable({
       lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C)
       lRR <- log(input$Risk_T) - log(input$Risk_C)
+      RD <- input$Risk_T - input$Risk_C
       
-      data.frame("Odds Ratio" = exp(lOR), "Risk Ratio" = exp(lRR))
+      data.frame("Odds Ratio" = exp(lOR), "Risk Ratio" = exp(lRR), "Risk Difference" = RD)
     }, digits = 2)
     
     

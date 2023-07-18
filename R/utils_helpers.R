@@ -23,6 +23,7 @@ seqb <- function(x, by = 1, base = 2, digits = 1){
   return(round(base^ret, digits))
 }
 
+
 #' @title Log Odds Ratio
 #' 
 #' @description Calculates log-transformed Odds Ratio 
@@ -56,3 +57,29 @@ OddsRatioSE <- Vectorize(function(R1,R2,N1,N2){
   k2 <- R2*N2 #number of responses in control group
   (1/(N1-k1) + 1/(N2-k2) + 1/k1 + 1/k2)^0.5
 }, vectorize.args = c("R1","R2","N1","N2"))
+
+
+#' @title Power Odds Ratio
+#' 
+#' @description Calculates the Statistical Power to Detect an Odds Ratio.
+#' 
+#' @param R1 Numeric. Event Risk in Treatment Arm.  
+#' @param R2 Numeric. Event Risk in Comparator Arm.
+#' @param N1 Integer. Sample Size of Treatment Arm.
+#' @param N2 Integer. Sample Size of Comparator Arm.
+#' @param Alpha Numeric. Type 1 Error Risk. Defaults to 0.025 (2.5%)
+#' @param Delta Numeric. Relevance Margin. Defaults to 1 (Odds Ratio).
+#' 
+#' @return Return numeric
+#' 
+#' @noRd
+PowOddsRatio <- Vectorize(function(R1,R2,N1,N2, Alpha = 0.025, Delta = 1){
+  lOR <- OddsRatio(R1, R2) #calculate log OR
+  lOR_se <- OddsRatioSE(R1, R2, N1, N2) #calculate standard error of log OR
+  
+  (1-pnorm(qnorm(1-Alpha, log(Delta),lOR_se), lOR, lOR_se))
+  
+}, vectorize.args = c("R1","R2","N1","N2","Alpha","Delta"))
+
+
+
