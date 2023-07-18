@@ -103,9 +103,7 @@ mod_RCT_binary_server <- function(id){
       N2 <- as.numeric(input$Sample)*(1-input$Prop_T)
       N2 <- seqb(N2, by = 0.01)
 
-      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C,
-                       N1 = round(N1), N2 = round(N2)
-                       ) #calculate log OR
+      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C) #calculate log OR
       lOR_se <- OddsRatioSE(R1 = input$Risk_T, R2 = input$Risk_C,
                             N1 = round(N1), N2 = round(N2)
                             ) #calculate standard error of log OR
@@ -114,9 +112,7 @@ mod_RCT_binary_server <- function(id){
     
     # Plots
     output$DistPlot <- renderPlot({
-      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C,
-                       N1 = 1, N2 = 1
-      ) #calculate log OR
+      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C) #calculate log OR
       lOR_se <- OddsRatioSE(R1 = input$Risk_T, R2 = input$Risk_C,
                             N1 = input$Sample[2]*input$Prop_T, N2 = input$Sample[2]*(1-input$Prop_T)
       ) #calculate standard error of log OR
@@ -169,7 +165,7 @@ mod_RCT_binary_server <- function(id){
     
     
     output$EffectTab <- renderTable({
-      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C, N1 = 1, N2 = 1)
+      lOR <- OddsRatio(R1 = input$Risk_T, R2 = input$Risk_C)
       lRR <- log(input$Risk_T) - log(input$Risk_C)
       
       data.frame("Odds Ratio" = exp(lOR), "Risk Ratio" = exp(lRR))
